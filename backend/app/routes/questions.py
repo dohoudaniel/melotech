@@ -20,6 +20,23 @@ from app.services.ai_orchestrator import generate_questions, AIProviderError
 router = APIRouter()
 
 
+# -----------------------------------------------------------------
+# POST /questions
+#
+# This is the core endpoint of the MeloTech product. The full pipeline:
+#   1. Pydantic validates the request body (job_title length, type).
+#   2. The route sanitizes the job title (strip, collapse whitespace).
+#   3. The route checks for prompt-injection patterns.
+#   4. The AI orchestrator calls Gemini (primary) or Groq (fallback).
+#   5. The response is parsed, validated, and returned as structured JSON.
+#
+# Error codes:
+#   400 — invalid input or injection attempt
+#   503 — both AI providers are unavailable
+#   500 — unexpected server error (catch-all, never leaks internals)
+# -----------------------------------------------------------------
+
+
 @router.post(
     "/questions",
     response_model=QuestionsResponse,

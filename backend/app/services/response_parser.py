@@ -29,22 +29,27 @@ def parse_ai_response(raw_text: str) -> Optional[list[QuestionItem]]:
         A list of exactly 3 QuestionItem objects if parsing succeeds,
         or None if the response is malformed or does not meet requirements.
     """
+    # Step 1: Strip markdown code fences (```json ... ```) that LLMs
+    # sometimes wrap around their JSON output.
     cleaned = _strip_markdown_fences(raw_text.strip())
 
+    # Step 2: Attempt to parse the cleaned text as JSON.
     try:
         data = json.loads(cleaned)
     except json.JSONDecodeError:
         logger.warning("AI response is not valid JSON.")
         return None
 
-    # The response must be a dict with a "questions" key.
+    # Step 3: Verify the top-level structure — must be a dict with a "questions" key.
     if not isinstance(data, dict) or "questions" not in data:
         logger.warning("AI response JSON does not contain a 'questions' key.")
         return None
 
     questions_raw = data["questions"]
 
-    # We need exactly 3 items.
+    # Step 4: Enforce exactly 3 questions — no more, no less.
+    # The system prompt asks for 3, but models can sometimes return fewer
+    # or more. We reject anything that doesn't match exactly.
     if not isinstance(questions_raw, list) or len(questions_raw) != 3:
         logger.warning(
             "AI response contains %s questions instead of 3.",
@@ -52,7 +57,9 @@ def parse_ai_response(raw_text: str) -> Optional[list[QuestionItem]]:
         )
         return None
 
-    # Validate each item against the QuestionItem schema.
+    # Step 5: Validate each item against the QuestionItem Pydantic schema.
+    # This ensures every question has the required fields (category, question,
+    # why_it_matters) with the correct types.
     try:
         items = [QuestionItem(**q) for q in questions_raw]
     except Exception:

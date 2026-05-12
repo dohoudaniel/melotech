@@ -6,7 +6,6 @@ validated Settings object. Nothing is hardcoded; every secret and
 configurable value is read from the environment.
 """
 
-import os
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
@@ -67,7 +66,9 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Placeholder values that ship in .env.example and should be replaced.
+    # Placeholder values that ship in .env.example and the test .env.
+    # If a key is still set to one of these at startup, it means the
+    # developer forgot to replace it with their real credentials.
     _PLACEHOLDER_VALUES = {
         "your_gemini_api_key_here",
         "your_groq_api_key_here",

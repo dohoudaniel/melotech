@@ -44,6 +44,10 @@ async def call_gemini(
         contents=user_message,
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
+            # Temperature of 0.7 balances variety (different questions across
+            # repeated requests) with reliability (structured JSON output).
+            # Lower values (0.3) give repetitive results; higher values (0.9+)
+            # risk malformed output.
             temperature=0.7,
         ),
     )

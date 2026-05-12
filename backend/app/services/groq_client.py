@@ -44,6 +44,8 @@ async def call_groq(
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
+        # Temperature of 0.7 — same value used in the Gemini client for
+        # consistency. See gemini_client.py for the rationale.
         temperature=0.7,
     )
 
