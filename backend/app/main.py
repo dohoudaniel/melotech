@@ -24,6 +24,23 @@ def create_app() -> FastAPI:
     """
     settings = get_settings()
 
+    # --- Startup validation ---
+    # Check that all required environment variables are properly set.
+    # This catches misconfiguration immediately rather than failing on the
+    # first user request with a cryptic provider error.
+    config_warnings = settings.validate_required_keys()
+    for warning in config_warnings:
+        logger.warning("CONFIG: %s", warning)
+
+    # If both AI provider keys are missing, the app is non-functional.
+    # Fail fast with a clear error rather than starting a broken server.
+    if len(config_warnings) >= 2 and any("GEMINI" in w for w in config_warnings) and any("GROQ" in w for w in config_warnings):
+        raise RuntimeError(
+            "Both GEMINI_API_KEY and GROQ_API_KEY are missing or invalid. "
+            "The server cannot generate questions without at least one AI provider. "
+            "Please check your .env file."
+        )
+
     app = FastAPI(
         title=settings.app_name,
         description=(

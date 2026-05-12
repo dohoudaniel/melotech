@@ -67,6 +67,47 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    # Placeholder values that ship in .env.example and should be replaced.
+    _PLACEHOLDER_VALUES = {
+        "your_gemini_api_key_here",
+        "your_groq_api_key_here",
+        "test_key",
+    }
+
+    def validate_required_keys(self) -> list[str]:
+        """
+        Check that all required environment variables are set and not
+        still using placeholder values from .env.example.
+
+        Returns:
+            A list of human-readable warning strings. An empty list
+            means everything is configured correctly.
+        """
+        warnings: list[str] = []
+
+        # Check Gemini API key.
+        if not self.gemini_api_key or self.gemini_api_key.strip() in self._PLACEHOLDER_VALUES:
+            warnings.append(
+                "GEMINI_API_KEY is missing or still set to a placeholder. "
+                "The primary AI provider will not work."
+            )
+
+        # Check Groq API key.
+        if not self.groq_api_key or self.groq_api_key.strip() in self._PLACEHOLDER_VALUES:
+            warnings.append(
+                "GROQ_API_KEY is missing or still set to a placeholder. "
+                "The fallback AI provider will not work."
+            )
+
+        # Check CORS origins.
+        if not self.cors_origins or not self.cors_origins.strip():
+            warnings.append(
+                "CORS_ORIGINS is empty. The frontend will not be able to "
+                "communicate with the backend."
+            )
+
+        return warnings
+
 
 def get_settings() -> Settings:
     """
