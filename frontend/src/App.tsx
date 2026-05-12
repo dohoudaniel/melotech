@@ -59,8 +59,25 @@ export default function App() {
     // Prevent the default form submission behavior (page reload).
     e.preventDefault();
     
+    // Basic Sanitization & Validation to prevent Prompt Injection / Malicious payloads
+    const sanitizedTitle = jobTitle.trim();
+    
     // Do nothing if the input is empty or only whitespace.
-    if (!jobTitle.trim()) return;
+    if (!sanitizedTitle) return;
+
+    // 1. Length constraint: Job titles shouldn't be massive paragraphs.
+    if (sanitizedTitle.length > 80) {
+      setError("Job title is too long. Please keep it under 80 characters.");
+      return;
+    }
+
+    // 2. Character Allowlist: Only allow unicode letters, numbers, spaces, and safe punctuation.
+    // This rejects <script> tags, code blocks, and complex prompt injection symbols.
+    const safeRegex = /^[\p{L}\p{N}\s\-\.,&/'()]+$/u;
+    if (!safeRegex.test(sanitizedTitle)) {
+      setError("Job title contains invalid characters. Please use only letters, numbers, and basic punctuation.");
+      return;
+    }
 
     // Reset states to prepare for the new request.
     setIsLoading(true);
@@ -68,8 +85,8 @@ export default function App() {
     setQuestions([]);
 
     try {
-      // Call the API helper to generate questions based on the provided job title.
-      const data = await generateQuestions(jobTitle);
+      // Call the API helper to generate questions based on the provided sanitized job title.
+      const data = await generateQuestions(sanitizedTitle);
       // Update state with the returned questions.
       setQuestions(data);
     } catch (err) {
