@@ -6,6 +6,8 @@ export interface Question {
   category?: string;
   /** The actual text of the interview question. */
   question: string;
+  /** A concise explanation of what the interviewer learns from this question. */
+  why_it_matters?: string;
 }
 
 /**

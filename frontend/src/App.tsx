@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader2, UserPlus, Sparkles, AlertCircle, Moon, Sun } from 'lucide-react';
+import { UserPlus, Sparkles, AlertCircle, Moon, Sun } from 'lucide-react';
 import { generateQuestions, type Question } from './api';
 
 // Constant array of messages to rotate through during the loading state.
@@ -99,7 +99,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans selection:bg-mint-100 selection:text-mint-600 dark:selection:bg-mint-900/40 dark:selection:text-mint-400 px-4 sm:px-6 py-12 md:py-24 transition-colors duration-300">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans selection:bg-mint-100 selection:text-mint-600 dark:selection:bg-mint-900/40 dark:selection:text-mint-400 px-4 sm:px-6 pt-8 pb-12 md:pt-12 md:pb-24 transition-colors duration-300">
       
       {/* Theme Toggle Button: Allows the user to switch between light and dark modes. */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
@@ -112,16 +112,21 @@ export default function App() {
         </button>
       </div>
 
-      <div className="max-w-xl mx-auto w-full flex flex-col gap-8">
+      <div className={`mx-auto w-full flex flex-col gap-8 transition-all duration-500 ${questions.length > 0 ? 'max-w-5xl' : 'max-w-xl'}`}>
         
         {/* Header Section: Displays the app's branding and a brief description. */}
         <header className="flex flex-col items-center text-center space-y-3">
-          <div className="inline-flex items-center justify-center p-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl mb-2 transition-colors">
-            <Sparkles className="w-5 h-5 text-mint-500 dark:text-mint-400" />
+          <div className="flex items-center gap-3 mb-2">
+            <div className="inline-flex items-center justify-center p-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl transition-colors">
+              <Sparkles className="w-5 h-5 text-mint-500 dark:text-mint-400" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+              MeloTech
+            </h1>
+            <div className="inline-flex items-center justify-center p-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl transition-colors">
+              <Sparkles className="w-5 h-5 text-mint-500 dark:text-mint-400" />
+            </div>
           </div>
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            MeloTech
-          </h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm md:text-base max-w-sm transition-colors">
             Generate thoughtful interview questions from a job title.
           </p>
@@ -131,39 +136,37 @@ export default function App() {
         <main className="w-full space-y-8">
           
           {/* Input Form Section */}
-          <section className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 md:p-6 shadow-sm transition-colors">
-            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="jobTitle" className="text-sm font-medium text-zinc-700 dark:text-zinc-300 ml-1 transition-colors">
-                  What role are you hiring / applying for?
-                </label>
-                <div className="relative">
-                  {/* Icon positioned inside the input field for visual enhancement. */}
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <UserPlus className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
-                  </div>
-                  {/* Job title input field. Disabled while a request is in progress. */}
-                  <input
-                    id="jobTitle"
-                    type="text"
-                    value={jobTitle}
-                    onChange={(e) => {
-                      setJobTitle(e.target.value);
-                      if (error) setError(null);
-                    }}
-                    placeholder="Customer Success Manager"
-                    className="block w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-mint-accent focus:border-mint-accent focus:bg-white dark:focus:bg-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
-                    disabled={isLoading}
-                    autoFocus
-                  />
+          <section>
+            <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
+              <label htmlFor="jobTitle" className="text-lg md:text-xl font-medium tracking-tight text-zinc-800 dark:text-zinc-200 transition-colors">
+                What role are you hiring or applying for?
+              </label>
+              <div className="relative w-full max-w-sm">
+                {/* Icon positioned inside the input field for visual enhancement. */}
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <UserPlus className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 </div>
+                {/* Job title input field. Disabled while a request is in progress. */}
+                <input
+                  id="jobTitle"
+                  type="text"
+                  value={jobTitle}
+                  onChange={(e) => {
+                    setJobTitle(e.target.value);
+                    if (error) setError(null);
+                  }}
+                  placeholder="Customer Success Manager"
+                  className="block w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-mint-accent focus:border-mint-accent focus:bg-white dark:focus:bg-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base text-center"
+                  disabled={isLoading}
+                  autoFocus
+                />
               </div>
               
               {/* Submit button. Disabled if loading or if the input is empty. */}
               <button
                 type="submit"
                 disabled={isLoading || !jobTitle.trim()}
-                className="w-fit self-center inline-flex items-center justify-center py-2.5 px-6 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl text-sm font-medium hover:bg-zinc-800 dark:hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-900 dark:focus:ring-offset-zinc-950 dark:focus:ring-white disabled:bg-zinc-300 disabled:text-zinc-500 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
+                className="w-fit inline-flex items-center justify-center py-2.5 px-6 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl text-sm font-medium hover:bg-zinc-800 dark:hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-900 dark:focus:ring-offset-zinc-950 dark:focus:ring-white disabled:bg-zinc-300 disabled:text-zinc-500 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? 'Generating...' : 'Generate Questions'}
               </button>
@@ -191,22 +194,34 @@ export default function App() {
                 </h2>
               </div>
               
-              <div className="flex flex-col gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Iterate through the questions and render a card for each. */}
                 {questions.map((q, idx) => (
                   <div 
                     key={idx} 
-                    className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 hover:border-mint-accent/50 dark:hover:border-mint-accent/50 transition-colors"
+                    className="flex flex-col bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 hover:border-mint-accent/50 dark:hover:border-mint-accent/50 transition-colors"
                   >
-                    {/* Render the category badge if the API provided one. */}
-                    {q.category && (
-                      <span className="inline-block px-2.5 py-1 mb-3 text-xs font-medium bg-mint-50 dark:bg-mint-500/10 text-mint-600 dark:text-mint-400 rounded-md transition-colors">
-                        {q.category}
-                      </span>
+                    {/* Top section: category badge and question text. */}
+                    <div className="flex-1">
+                      {/* Render the category badge if the API provided one. */}
+                      {q.category && (
+                        <span className="inline-block px-2.5 py-1 mb-3 text-xs font-medium bg-mint-50 dark:bg-mint-500/10 text-mint-600 dark:text-mint-400 rounded-md transition-colors">
+                          {q.category}
+                        </span>
+                      )}
+                      <p className="text-zinc-800 dark:text-zinc-200 text-[15px] leading-relaxed transition-colors">
+                        {q.question}
+                      </p>
+                    </div>
+                    {/* Bottom section: why_it_matters is pinned to the bottom of the card. */}
+                    {q.why_it_matters && (
+                      <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
+                        <p className="text-[13px] text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                          <span className="font-semibold text-mint-600 dark:text-mint-400">Why it matters: </span>
+                          {q.why_it_matters}
+                        </p>
+                      </div>
                     )}
-                    <p className="text-zinc-800 dark:text-zinc-200 text-[15px] leading-relaxed transition-colors">
-                      {q.question}
-                    </p>
                   </div>
                 ))}
               </div>
@@ -234,18 +249,19 @@ function LoadingState() {
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
-    }, 1200);
+    }, 2500);
 
     // Clean up the interval when the component unmounts.
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <div className="relative flex items-center justify-center">
-        {/* Decorative pulsating background effect for the loader. */}
-        <div className="absolute inset-0 bg-mint-100 dark:bg-mint-900/20 rounded-full blur-xl opacity-50 animate-pulse transition-colors"></div>
-        <Loader2 className="w-6 h-6 text-mint-500 dark:text-mint-400 animate-spin relative transition-colors" />
+    <div className="flex flex-col items-center justify-center py-10 space-y-5">
+      {/* Custom branded loading indicator: three pulsing dots in mint green. */}
+      <div className="flex items-center gap-2">
+        <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
       {/* Display the current loading message based on the rotating index. */}
       <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 text-center min-h-[1.5rem] transition-colors duration-300">
