@@ -99,10 +99,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans selection:bg-mint-100 selection:text-mint-600 dark:selection:bg-mint-900/40 dark:selection:text-mint-400 px-4 sm:px-6 pt-8 pb-12 md:pt-12 md:pb-24 transition-colors duration-300">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans selection:bg-mint-100 selection:text-mint-600 dark:selection:bg-mint-900/40 dark:selection:text-mint-400 px-4 sm:px-6 pt-3 pb-12 md:pt-4 md:pb-24 transition-colors duration-300">
       
-      {/* Theme Toggle Button: Allows the user to switch between light and dark modes. */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+      {/* Top bar: Favicon/logo on the left, theme toggle on the right. */}
+      <div className="flex items-center justify-between mb-6 md:mb-8">
+        <img
+          src="/favicon.png"
+          alt="MeloTech logo"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg"
+        />
         <button
           onClick={() => setIsDark(!isDark)}
           className="p-2 rounded-full text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors focus:outline-none focus:ring-2 focus:ring-mint-accent"
