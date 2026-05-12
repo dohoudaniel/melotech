@@ -29,7 +29,7 @@ async def call_gemini(
 
     Args:
         api_key: The Gemini API key (loaded from environment).
-        model: The model identifier (e.g. "gemini-2.5-flash-preview-05-20").
+        model: The model identifier (e.g. "gemini-3.1-pro-preview").
         system_prompt: The system instruction for the model.
         user_message: The user-facing message containing the job title.
 
