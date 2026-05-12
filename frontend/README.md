@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+<div align="center">
+  <img src="./public/favicon.png" alt="MeloTech Logo" width="120" />
+  <h1>MeloTech - Frontend</h1>
+  <p>A simple, smart web app that generates thoughtful interview questions based on a job title.</p>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## What is this?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This is the user-facing side (frontend) of the **MeloTech** application. It provides a clean, distraction-free interface where you can enter the title of a role you are hiring for (like "Customer Success Manager" or "Software Engineer"). 
 
-## React Compiler
+Once you type in the role and click "Generate", this application securely asks the backend server to create three highly relevant, professional interview questions. It even shows you a nice loading animation with helpful status messages while it works!
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Key Features:**
+- **Simple Design:** A clean layout with a crisp white and mint-green color scheme.
+- **Dark Mode:** Automatically adjusts to your system preference, and includes a toggle button so you can switch between light and dark modes instantly.
+- **Safe & Secure:** Built-in safeguards prevent the app from accepting invalid or overly long text, protecting the system from errors before they even happen.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## How to Set It Up Locally
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+If you want to run this application on your own computer, follow these simple steps:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed on your computer.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Install the Project
+Open your terminal, ensure you are inside the `frontend` folder, and run the following command to download all the necessary project files:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 3. Set Up Your Environment
+The frontend needs to know where the backend server is located in order to get the questions. 
+We have provided an example configuration file for you.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Copy the `.env.example` file and create a new file named `.env`:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
+
+If you open the new `.env` file, it should look like this:
+```
+VITE_API_BASE_URL=http://localhost:8000
+```
+*(This assumes your backend will eventually be running on port 8000 on your computer).*
+
+### 4. Start the Application
+Once everything is installed and your `.env` file is ready, you can start the application:
+
+```bash
+npm run dev
+```
+
+Your terminal will provide you with a local link (usually `http://localhost:5173`). Click that link or paste it into your browser, and you will see MeloTech running live!
+
+---
+
+## Built With
+- **React** for building the user interface.
+- **Tailwind CSS** for the beautiful styling and dark mode features.
+- **Vite** to make the development process fast and smooth.
+- **Geist Font** for clean, modern typography.
+- **Lucide Icons** for the crisp buttons and visual elements.
