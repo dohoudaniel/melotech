@@ -6,6 +6,7 @@ validated Settings object. Nothing is hardcoded; every secret and
 configurable value is read from the environment.
 """
 
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
@@ -110,12 +111,13 @@ class Settings(BaseSettings):
         return warnings
 
 
+@lru_cache()
 def get_settings() -> Settings:
     """
-    Return a Settings instance.
+    Return a cached Settings instance.
 
-    Called once at app startup and injected where needed via FastAPI's
-    dependency system. This avoids re-reading environment variables on
-    every request.
+    Uses lru_cache so the .env file is read exactly once at startup.
+    All subsequent calls (including FastAPI's Depends injection on
+    every request) return the same cached object.
     """
     return Settings()
