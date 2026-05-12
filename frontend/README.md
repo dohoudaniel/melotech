@@ -2,6 +2,10 @@
   <img src="./public/favicon.png" alt="MeloTech Logo" width="120" />
   <h1>MeloTech - Frontend</h1>
   <p>A simple, smart web app that generates thoughtful interview questions based on a job title.</p>
+  <br />
+  <p>
+    <a href="https://melotech.vercel.app/"><strong>🌐 Live App</strong></a>
+  </p>
 </div>
 
 ---

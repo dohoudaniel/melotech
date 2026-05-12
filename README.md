@@ -8,6 +8,11 @@
     <strong>Backend:</strong> FastAPI · Pydantic &nbsp;|&nbsp;
     <strong>AI:</strong> Google Gemini · Groq (LLaMA)
   </p>
+  <br />
+  <p>
+    <a href="https://melotech.vercel.app/"><strong>🌐 Live App</strong></a> &nbsp;·&nbsp;
+    <a href="https://melotechapi.onrender.com/docs"><strong>📡 API Docs</strong></a>
+  </p>
 </div>
 
 ---
@@ -204,9 +209,23 @@ melotech/
 
 ---
 
+## Live Deployment
+
+MeloTech is deployed and available to use right now:
+
+| Part | URL |
+|------|-----|
+| **Frontend** | [melotech.vercel.app](https://melotech.vercel.app/) |
+| **Backend API** | [melotechapi.onrender.com](https://melotechapi.onrender.com/) |
+| **API Docs (Swagger)** | [melotechapi.onrender.com/docs](https://melotechapi.onrender.com/docs) |
+
+> **Note:** The backend is hosted on Render's free tier, so the first request after a period of inactivity may take a few seconds while the server wakes up.
+
+---
+
 ## Local Setup
 
-This project is split into two independently runnable parts. Each has its own README with step-by-step setup instructions:
+If you want to run the project locally instead, each part has its own README with step-by-step setup instructions:
 
 | Part | Setup guide |
 |------|------------|

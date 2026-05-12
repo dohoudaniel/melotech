@@ -2,6 +2,11 @@
   <img src="../frontend/public/favicon.png" alt="MeloTech Logo" width="120" />
   <h1>MeloTech Backend</h1>
   <p>A small FastAPI backend that generates thoughtful interview questions using AI.</p>
+  <br />
+  <p>
+    <a href="https://melotechapi.onrender.com/"><strong>🚀 Live API</strong></a> &nbsp;·&nbsp;
+    <a href="https://melotechapi.onrender.com/docs"><strong>📖 Swagger Docs</strong></a>
+  </p>
 </div>
 
 ---
