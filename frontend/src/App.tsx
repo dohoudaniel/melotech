@@ -73,7 +73,7 @@ export default function App() {
 
     // 2. Character Allowlist: Only allow unicode letters, numbers, spaces, and safe punctuation.
     // This rejects <script> tags, code blocks, and complex prompt injection symbols.
-    const safeRegex = /^[\p{L}\p{N}\s\-\.,&/'()]+$/u;
+    const safeRegex = /^[\p{L}\p{N}\s\-.,&/'()]+$/u;
     if (!safeRegex.test(sanitizedTitle)) {
       setError("Job title contains invalid characters. Please use only letters, numbers, and basic punctuation.");
       return;
@@ -147,7 +147,10 @@ export default function App() {
                     id="jobTitle"
                     type="text"
                     value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
+                    onChange={(e) => {
+                      setJobTitle(e.target.value);
+                      if (error) setError(null);
+                    }}
                     placeholder="Customer Success Manager"
                     className="block w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-mint-accent focus:border-mint-accent focus:bg-white dark:focus:bg-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                     disabled={isLoading}

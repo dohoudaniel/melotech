@@ -16,14 +16,9 @@ export interface GenerateQuestionsResponse {
   questions: Question[];
 }
 
-// Retrieve the base URL of the backend from environment variables.
-// In Vite, environment variables are exposed via `import.meta.env`.
+// Ensure the application doesn't crash on load by checking at runtime inside the function.
+// This allows the UI to render and display a friendly error message.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-// Ensure the application fails fast if the necessary environment variable is missing.
-if (!API_BASE_URL) {
-  throw new Error("VITE_API_BASE_URL is not defined in the environment variables.");
-}
 
 /**
  * Calls the backend API to generate interview questions for a specific job title.
@@ -33,6 +28,10 @@ if (!API_BASE_URL) {
  * @throws Will throw an error if the network request fails or returns a non-ok status.
  */
 export async function generateQuestions(jobTitle: string): Promise<Question[]> {
+  if (!API_BASE_URL) {
+    throw new Error("VITE_API_BASE_URL is not defined. Please check your environment variables.");
+  }
+
   // Execute a POST request to the backend endpoint.
   const response = await fetch(`${API_BASE_URL}/questions`, {
     method: 'POST',
@@ -51,6 +50,11 @@ export async function generateQuestions(jobTitle: string): Promise<Question[]> {
 
   // Parse the structured JSON response returned by the backend.
   const data: GenerateQuestionsResponse = await response.json();
+  
+  // Guard against malformed backend responses to prevent frontend crashes (.map is not a function).
+  if (!data || !Array.isArray(data.questions)) {
+    throw new Error('Received an invalid response format from the server.');
+  }
   
   // Return the extracted array of questions.
   return data.questions;
