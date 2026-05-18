@@ -1,13 +1,19 @@
+/* Tailwind v4 core — processed by @tailwindcss/vite, no config file needed. */
 @import "tailwindcss";
 
+/* Tailwind v4 dark variant: activates dark: utilities when any ancestor has class="dark".
+   App.tsx toggles .dark on <html> based on user preference / system setting. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Extend Tailwind's design system with custom tokens.
+   Each --color-* variable becomes a Tailwind class (e.g. bg-mint-500, text-mint-accent). */
 @theme {
   --color-mint-50: #f0fdf4;
   --color-mint-100: #dcfce7;
   --color-mint-500: #22c55e;
   --color-mint-600: #16a34a;
-  --color-mint-accent: #34d399; /* soft mint */
+  --color-mint-accent: #34d399; /* soft mint used for focus rings and hover borders */
+  /* Override Tailwind's default sans stack — Geist first, then standard system fallbacks. */
   --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
