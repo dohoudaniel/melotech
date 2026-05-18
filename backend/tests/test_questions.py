@@ -71,7 +71,9 @@ async def test_empty_job_title_returns_400(client):
     async with client as c:
         response = await c.post("/questions", json={"job_title": ""})
 
-    assert response.status_code == 422  # Pydantic validation error (min_length=1).
+    # 422 Unprocessable Entity — FastAPI/Pydantic rejects min_length=1 violation
+    # before the route handler runs. The test name says 400 but 422 is correct.
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
@@ -80,10 +82,8 @@ async def test_whitespace_only_job_title_returns_400(client):
     async with client as c:
         response = await c.post("/questions", json={"job_title": "   "})
 
-    # Pydantic trims and sees length < 1 after stripping? No — it sees length 3.
-    # But sanitization will strip it to empty, returning a 400 from the route.
-    # However Pydantic min_length applies to the raw value. " " has length 3.
-    # So Pydantic passes it, but the route's sanitization catches it.
+    # "   " has length 3, so Pydantic's min_length=1 passes it through.
+    # sanitize_job_title() strips it to "", and the route handler returns 400.
     assert response.status_code == 400
     assert "error" in response.json()
 

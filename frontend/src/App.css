@@ -1,3 +1,9 @@
+/*
+ * NOTE: This file is leftover scaffolding from Vite's default React template.
+ * None of these styles are used by MeloTech — all app styling is done via
+ * Tailwind utility classes in App.tsx. This file can be safely deleted.
+ */
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

@@ -16,9 +16,9 @@ class QuestionRequest(BaseModel):
     """
 
     job_title: str = Field(
-        ...,
-        min_length=1,
-        max_length=100,
+        ...,                    # ... (Ellipsis) = required, no default value
+        min_length=1,           # FastAPI returns 422 automatically if violated
+        max_length=100,         # Secondary cap; frontend enforces 80 chars first
         description="The job title to generate interview questions for.",
         examples=["Customer Success Manager"],
     )
@@ -52,7 +52,7 @@ class QuestionsResponse(BaseModel):
 
     questions: list[QuestionItem] = Field(
         ...,
-        min_length=3,
+        min_length=3,   # Belt-and-suspenders on top of response_parser.py's own count check
         max_length=3,
         description="Exactly 3 generated interview questions.",
     )

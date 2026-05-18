@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserPlus, Sparkles, AlertCircle, Moon, Sun } from 'lucide-react';
-import { generateQuestions, type Question } from './api';
+import { generateQuestions, warmupBackend, type Question } from './api';
 
 // Constant array of messages to rotate through during the loading state.
 // This provides a dynamic and engaging experience rather than a static "Loading...".
@@ -49,6 +49,12 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [isDark]);
+
+  // Pre-warm the backend on mount so Render's free-tier cold start
+  // completes while the user is still reading/filling the form.
+  useEffect(() => {
+    warmupBackend();
+  }, []);
 
   /**
    * Handles the form submission to fetch generated interview questions.
@@ -244,34 +250,37 @@ export default function App() {
  * It periodically updates the displayed message from the `LOADING_MESSAGES` array.
  */
 function LoadingState() {
-  // State to track the index of the currently displayed loading message.
   const [messageIndex, setMessageIndex] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
 
-  /**
-   * Effect hook to set up the interval that rotates the loading messages.
-   * Updates the message index every 1.2 seconds.
-   */
   useEffect(() => {
-    const interval = setInterval(() => {
+    const msgInterval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
     }, 2500);
-
-    // Clean up the interval when the component unmounts.
-    return () => clearInterval(interval);
+    const elapsedInterval = setInterval(() => {
+      setElapsed((prev) => prev + 1);
+    }, 1000);
+    return () => {
+      clearInterval(msgInterval);
+      clearInterval(elapsedInterval);
+    };
   }, []);
 
   return (
     <div className="flex flex-col items-center justify-center py-10 space-y-5">
-      {/* Custom branded loading indicator: three pulsing dots in mint green. */}
       <div className="flex items-center gap-2">
         <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '0ms' }} />
         <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '150ms' }} />
         <span className="block w-2.5 h-2.5 rounded-full bg-mint-500 dark:bg-mint-400 animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
-      {/* Display the current loading message based on the rotating index. */}
       <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 text-center min-h-[1.5rem] transition-colors duration-300">
         {LOADING_MESSAGES[messageIndex]}
       </p>
+      {elapsed >= 8 && (
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 text-center max-w-xs leading-relaxed transition-colors">
+          Taking a bit longer than usual — hang tight.
+        </p>
+      )}
     </div>
   );
 }

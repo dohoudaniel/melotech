@@ -18,9 +18,16 @@ export interface GenerateQuestionsResponse {
   questions: Question[];
 }
 
-// Ensure the application doesn't crash on load by checking at runtime inside the function.
-// This allows the UI to render and display a friendly error message.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+/**
+ * Fires a silent GET /health to wake the backend (Render free tier cold start).
+ * Called on app mount so the backend warms while the user fills the form.
+ */
+export function warmupBackend(): void {
+  if (!API_BASE_URL) return;
+  fetch(`${API_BASE_URL}/health`).catch(() => {});
+}
 
 /**
  * Calls the backend API to generate interview questions for a specific job title.
