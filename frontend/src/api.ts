@@ -20,13 +20,31 @@ export interface GenerateQuestionsResponse {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Render free tier can take up to 3 minutes to cold-start.
+// Both the warmup ping and the questions request use this timeout.
+const FETCH_TIMEOUT_MS = 3 * 60 * 1000;
+
+/**
+ * Returns an AbortSignal that fires after FETCH_TIMEOUT_MS.
+ * Also returns the timeout ID so the caller can clear it on success.
+ */
+function makeTimeoutSignal(): { signal: AbortSignal; clearTimer: () => void } {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  return { signal: controller.signal, clearTimer: () => clearTimeout(id) };
+}
+
 /**
  * Fires a silent GET /health to wake the backend (Render free tier cold start).
  * Called on app mount so the backend warms while the user fills the form.
+ * Uses a 3-minute timeout to survive the full cold-start window.
  */
 export function warmupBackend(): void {
   if (!API_BASE_URL) return;
-  fetch(`${API_BASE_URL}/health`).catch(() => {});
+  const { signal, clearTimer } = makeTimeoutSignal();
+  fetch(`${API_BASE_URL}/health`, { signal })
+    .then(clearTimer)
+    .catch(clearTimer);
 }
 
 /**
@@ -41,16 +59,27 @@ export async function generateQuestions(jobTitle: string): Promise<Question[]> {
     throw new Error("VITE_API_BASE_URL is not defined. Please check your environment variables.");
   }
 
-  // Execute a POST request to the backend endpoint.
-  const response = await fetch(`${API_BASE_URL}/questions`, {
-    method: 'POST',
-    headers: {
-      // Indicate that we are sending JSON data.
-      'Content-Type': 'application/json',
-    },
-    // Serialize the payload to JSON.
-    body: JSON.stringify({ job_title: jobTitle }),
-  });
+  const { signal, clearTimer } = makeTimeoutSignal();
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ job_title: jobTitle }),
+      signal,
+    });
+    clearTimer();
+  } catch (err) {
+    clearTimer();
+    // AbortError means our 3-minute timeout fired before the server responded.
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('The server is taking too long to respond. Please try again in a moment.');
+    }
+    throw new Error('Failed to reach the server. Please check your connection and try again.');
+  }
 
   // Check if the response indicates success (status 200-299).
   if (!response.ok) {
@@ -59,12 +88,11 @@ export async function generateQuestions(jobTitle: string): Promise<Question[]> {
 
   // Parse the structured JSON response returned by the backend.
   const data: GenerateQuestionsResponse = await response.json();
-  
+
   // Guard against malformed backend responses to prevent frontend crashes (.map is not a function).
   if (!data || !Array.isArray(data.questions)) {
     throw new Error('Received an invalid response format from the server.');
   }
-  
-  // Return the extracted array of questions.
+
   return data.questions;
 }
